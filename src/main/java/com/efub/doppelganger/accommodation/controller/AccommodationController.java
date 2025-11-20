@@ -24,4 +24,12 @@ public class AccommodationController {
         AccommodationListResponseDto responseDto = accommodationService.getAccommodations(query, page);
         return ResponseEntity.ok(responseDto);
     }
+
+    // 숙소 카드 정렬
+    @GetMapping("/card")
+    public ResponseEntity<AccommodationListResponseDto> sortAccommodation(@RequestParam String sortBy,
+                                                                          @RequestParam int page) {
+        AccommodationListResponseDto responseDto = accommodationService.getSortedAccommodations(sortBy, page);
+        return ResponseEntity.ok(responseDto);
+    }
 }
