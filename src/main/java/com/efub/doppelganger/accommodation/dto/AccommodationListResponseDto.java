@@ -1,6 +1,7 @@
 package com.efub.doppelganger.accommodation.dto;
 
 import com.efub.doppelganger.accommodation.domain.Accommodation;
+import com.efub.doppelganger.accommodation.dto.summary.AccommodationSummary;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.domain.Page;
