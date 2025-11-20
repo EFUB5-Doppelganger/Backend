@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,23 @@ public class AccommodationService {
     public AccommodationListResponseDto getAccommodations(String query, int page) {
         Pageable pageable = PageRequest.of(page, 8);
         Page<Accommodation> accommodationList = accommodationRepository.findByLocationContaining(query, pageable);
+
+        int totalPages = accommodationList.getTotalPages();
+        int totalCounts = (int) accommodationList.getTotalElements();
+
+        return AccommodationListResponseDto.from(accommodationList, page, totalPages, totalCounts);
+    }
+
+    // 숙소 카드
+    public AccommodationListResponseDto getSortedAccommodations(String sortBy, int page) {
+
+        Sort sort = switch (sortBy) {
+            case "createdAt" -> Sort.by(Sort.Direction.DESC, "createdAt");
+            case "rating" -> Sort.by(Sort.Direction.DESC, "rating");
+            default -> Sort.unsorted();
+        };
+        Pageable pageable = PageRequest.of(page, 8, sort);
+        Page<Accommodation> accommodationList = accommodationRepository.findAll(pageable);
 
         int totalPages = accommodationList.getTotalPages();
         int totalCounts = (int) accommodationList.getTotalElements();
