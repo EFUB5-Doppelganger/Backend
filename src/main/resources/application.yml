@@ -13,17 +13,16 @@ spring:
       hibernate:
         format_sql: true
     database-platform: org.hibernate.dialect.MySQLDialect
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 50MB
 spring.devtools.restart.enabled: false
 
-#cloud:
-#  aws:
-#    s3:
-#      bucket: ${cloud.aws.s3.bucket}
-#    credentials:
-#      access-key: ${cloud.aws.credentials.access-key}
-#      secret-key: ${cloud.aws.credentials.secret-key}
-#    region:
-#      static: ap-northeast-2
-#      auto: false
-#    stack:
-#      auto: false
+aws:
+  s3:
+    bucket: efub-doppelganger
+    region: ap-northeast-2
+    access-key: ${AWS_ACCESS_KEY}
+    secret-key: ${AWS_SECRET_ACCESS_KEY}

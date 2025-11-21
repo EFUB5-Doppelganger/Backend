@@ -1,8 +1,11 @@
 package com.efub.doppelganger.accommodation.service;
 
 import com.efub.doppelganger.accommodation.domain.Accommodation;
-import com.efub.doppelganger.accommodation.dto.AccommodationListResponseDto;
+import com.efub.doppelganger.accommodation.domain.AccommodationImage;
+import com.efub.doppelganger.accommodation.dto.request.AccommodationRegisterRequestDto;
+import com.efub.doppelganger.accommodation.dto.response.AccommodationListResponseDto;
 import com.efub.doppelganger.accommodation.repository.AccommodationRepository;
+import com.efub.doppelganger.global.s3.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -10,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @Service
@@ -17,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class AccommodationService {
 
+    private final S3Service s3Service;
     private final AccommodationRepository accommodationRepository;
 
     // 위치로 숙소 검색
@@ -45,5 +50,35 @@ public class AccommodationService {
         int totalCounts = (int) accommodationList.getTotalElements();
 
         return AccommodationListResponseDto.from(accommodationList, page, totalPages, totalCounts);
+    }
+
+    // 숙소 등록
+    @Transactional
+    public void registerAccommodation(AccommodationRegisterRequestDto requestDto) {
+        Accommodation accommodation = Accommodation.builder()
+                .name(requestDto.getName())
+                .description(requestDto.getDescription())
+                .location(requestDto.getLocation())
+                .address(requestDto.getAddress())
+                .price(requestDto.getPrice())
+                .maxGuests(requestDto.getMaxGuests())
+                .bedroom(requestDto.getBedroom())
+                .bed(requestDto.getBed())
+                .bathroom(requestDto.getBathroom())
+                .build();
+        accommodationRepository.save(accommodation);
+
+        if (requestDto.getImages() != null && !requestDto.getImages().isEmpty()) {
+            int idx = 0;
+            for (MultipartFile file : requestDto.getImages()) {
+                String url = s3Service.uploadFile(file, "accommodations/" + accommodation.getId());
+                AccommodationImage img = AccommodationImage.builder()
+                        .accommodation(accommodation)
+                        .imgUrl(url)
+                        .displayOrder(idx++)
+                        .build();
+                accommodation.getAccommodationImageList().add(img);
+            }
+        }
     }
 }

@@ -1,4 +1,4 @@
-package com.efub.doppelganger.accommodation.dto;
+package com.efub.doppelganger.accommodation.dto.response;
 
 import com.efub.doppelganger.accommodation.domain.Accommodation;
 import com.efub.doppelganger.accommodation.dto.summary.AccommodationSummary;

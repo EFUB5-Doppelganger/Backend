@@ -2,10 +2,9 @@ package com.efub.doppelganger.accommodation.domain;
 
 import com.efub.doppelganger.review.domain.Review;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -13,6 +12,9 @@ import java.util.List;
 
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Accommodation {
 
@@ -46,9 +48,11 @@ public class Accommodation {
 //    @JoinColumn(name = "member_id")
 //    private Member member;
 
+    @Builder.Default
     @OneToMany(mappedBy = "accommodation", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AccommodationImage> accommodationImageList = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "accommodation", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviewList = new ArrayList<>();
 }
