@@ -5,6 +5,7 @@ import com.efub.doppelganger.accommodation.repository.AccommodationRepository;
 import com.efub.doppelganger.member.domain.Member;
 import com.efub.doppelganger.reservation.Reservation;
 import com.efub.doppelganger.reservation.ReservationRepository;
+import com.efub.doppelganger.review.dto.AccommodationReviewsResponseDto;
 import com.efub.doppelganger.review.dto.MyReviewResponseDto;
 import com.efub.doppelganger.review.dto.ReviewCreateRequestDto;
 import com.efub.doppelganger.review.dto.ReviewResponseDto;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -61,6 +63,34 @@ public class ReviewService {
         return myReviews.stream()
                 .map(MyReviewResponseDto::from)
                 .collect(Collectors.toList());
+    }
+
+    // 특정 숙소의 리뷰 목록 조회
+    public AccommodationReviewsResponseDto getAccommodationReviews(Long accommodationId) {
+
+        // 1. 숙소 존재 여부 확인 (404 Not Found 오류 방지)
+        accommodationRepository.findById(accommodationId)
+                .orElseThrow(() -> new NoSuchElementException("Accommodation not found with id: " + accommodationId));
+        // A001 오류 처리를 위해 Controller에서 404로 매핑되어야 함
+
+        // 2. 리뷰 데이터 조회 및 통계 계산
+        List<Review> reviews = reviewRepository.findByAccommodationIdOrderByCreatedAtDesc(accommodationId);
+
+        // 평균 평점 계산 (null 체크 포함)
+        Double avgScore = reviewRepository.findAverageScoreByAccommodationId(accommodationId);
+        double averageRating = (avgScore != null) ? Math.round(avgScore * 100) / 100.0 : 0.0;
+        int totalReviews = reviews.size();
+
+        // DTO 매핑
+        List<AccommodationReviewsResponseDto.ReviewDetailDto> reviewDtos = reviews.stream()
+                .map(AccommodationReviewsResponseDto.ReviewDetailDto::from)
+                .collect(Collectors.toList());
+
+        return AccommodationReviewsResponseDto.builder()
+                .averageRating(averageRating)
+                .totalReviews(totalReviews)
+                .reviews(reviewDtos)
+                .build();
     }
 }
 
