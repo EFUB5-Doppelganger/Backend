@@ -4,7 +4,9 @@ import com.efub.doppelganger.accommodation.dto.request.AccommodationRegisterRequ
 import com.efub.doppelganger.accommodation.dto.response.AccommodationDetailResponseDto;
 import com.efub.doppelganger.accommodation.dto.response.AccommodationListResponseDto;
 import com.efub.doppelganger.accommodation.service.AccommodationService;
+import com.efub.doppelganger.global.ErrorResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -47,5 +49,16 @@ public class AccommodationController {
     public ResponseEntity<AccommodationDetailResponseDto> getAccommodationDetail(@PathVariable Long accommodationId) {
         AccommodationDetailResponseDto responseDto = accommodationService.findAccommodationDetail(accommodationId);
         return ResponseEntity.ok(responseDto);
+    }
+
+    // 존재하지 않는 숙소 조회 (404 Not Found) 핸들러
+    @ExceptionHandler(java.util.NoSuchElementException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<ErrorResponse> handleNoSuchElementException(java.util.NoSuchElementException e) {
+
+        // A001: 숙소 없음 오류 코드 사용
+        ErrorResponse error = new ErrorResponse("A001", "Accommodation not found");
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 }
