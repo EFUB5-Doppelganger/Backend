@@ -6,6 +6,8 @@ import com.efub.doppelganger.accommodation.dto.request.AccommodationRegisterRequ
 import com.efub.doppelganger.accommodation.dto.response.AccommodationListResponseDto;
 import com.efub.doppelganger.accommodation.repository.AccommodationRepository;
 import com.efub.doppelganger.global.s3.S3Service;
+import com.efub.doppelganger.member.domain.Member;
+import com.efub.doppelganger.util.CurrentMemberUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class AccommodationService {
 
     private final S3Service s3Service;
+    private final CurrentMemberUtil currentMemberUtil;
     private final AccommodationRepository accommodationRepository;
 
     // 위치로 숙소 검색
@@ -55,9 +58,12 @@ public class AccommodationService {
     // 숙소 등록
     @Transactional
     public void registerAccommodation(AccommodationRegisterRequestDto requestDto) {
+        Member host = currentMemberUtil.getCurrentMember();
+
         Accommodation accommodation = Accommodation.builder()
                 .name(requestDto.getName())
                 .description(requestDto.getDescription())
+                .host(host)
                 .location(requestDto.getLocation())
                 .address(requestDto.getAddress())
                 .price(requestDto.getPrice())
