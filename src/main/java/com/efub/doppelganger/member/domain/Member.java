@@ -1,11 +1,14 @@
 package com.efub.doppelganger.member.domain;
 
+import com.efub.doppelganger.accommodation.domain.Accommodation;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -48,6 +51,9 @@ public class Member {
     @UpdateTimestamp
     @Column
     private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "host", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Accommodation> accommodationList = new ArrayList<>();
 
     @Builder
     public Member(String email, String password, String nickname, LoginType loginType, String providerId, String bio, String bornYear, String job) {

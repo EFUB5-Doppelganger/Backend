@@ -1,5 +1,6 @@
 package com.efub.doppelganger.accommodation.domain;
 
+import com.efub.doppelganger.member.domain.Member;
 import com.efub.doppelganger.review.domain.Review;
 import jakarta.persistence.*;
 import lombok.*;
@@ -44,9 +45,9 @@ public class Accommodation {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "member_id")
-//    private Member member;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member host;
 
     @Builder.Default
     @OneToMany(mappedBy = "accommodation", cascade = CascadeType.ALL, orphanRemoval = true)
