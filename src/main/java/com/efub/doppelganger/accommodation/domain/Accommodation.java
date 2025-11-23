@@ -1,7 +1,7 @@
 package com.efub.doppelganger.accommodation.domain;
 
 import com.efub.doppelganger.member.domain.Member;
-import com.efub.doppelganger.review.domain.Review;
+import com.efub.doppelganger.review.Review;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
