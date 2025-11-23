@@ -3,6 +3,7 @@ package com.efub.doppelganger.accommodation.service;
 import com.efub.doppelganger.accommodation.domain.Accommodation;
 import com.efub.doppelganger.accommodation.domain.AccommodationImage;
 import com.efub.doppelganger.accommodation.dto.request.AccommodationRegisterRequestDto;
+import com.efub.doppelganger.accommodation.dto.response.AccommodationDetailResponseDto;
 import com.efub.doppelganger.accommodation.dto.response.AccommodationListResponseDto;
 import com.efub.doppelganger.accommodation.repository.AccommodationRepository;
 import com.efub.doppelganger.global.s3.S3Service;
@@ -16,6 +17,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.NoSuchElementException;
 
 
 @Service
@@ -86,5 +89,16 @@ public class AccommodationService {
                 accommodation.getAccommodationImageList().add(img);
             }
         }
+    }
+
+    // 숙소 상세 정보 조회
+    public AccommodationDetailResponseDto findAccommodationDetail(Long accommodationId) {
+        Accommodation accommodation = accommodationRepository.findById(accommodationId)
+                .orElseThrow(() -> new NoSuchElementException("Accommodation not found with id: " + accommodationId));
+
+        if (accommodation.getAccommodationImageList().isEmpty()) {
+        }
+
+        return AccommodationDetailResponseDto.of(accommodation);
     }
 }

@@ -1,6 +1,7 @@
 package com.efub.doppelganger.accommodation.controller;
 
 import com.efub.doppelganger.accommodation.dto.request.AccommodationRegisterRequestDto;
+import com.efub.doppelganger.accommodation.dto.response.AccommodationDetailResponseDto;
 import com.efub.doppelganger.accommodation.dto.response.AccommodationListResponseDto;
 import com.efub.doppelganger.accommodation.service.AccommodationService;
 import lombok.RequiredArgsConstructor;
@@ -39,5 +40,12 @@ public class AccommodationController {
     ) {
         accommodationService.registerAccommodation(requestDto);
         return ResponseEntity.ok("숙소 등록이 완료되었습니다.");
+    }
+
+    // 숙소 상세 정보 조회
+    @GetMapping("/{accommodationId}")
+    public ResponseEntity<AccommodationDetailResponseDto> getAccommodationDetail(@PathVariable Long accommodationId) {
+        AccommodationDetailResponseDto responseDto = accommodationService.findAccommodationDetail(accommodationId);
+        return ResponseEntity.ok(responseDto);
     }
 }
