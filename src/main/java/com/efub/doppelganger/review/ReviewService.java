@@ -5,12 +5,16 @@ import com.efub.doppelganger.accommodation.repository.AccommodationRepository;
 import com.efub.doppelganger.member.domain.Member;
 import com.efub.doppelganger.reservation.Reservation;
 import com.efub.doppelganger.reservation.ReservationRepository;
+import com.efub.doppelganger.review.dto.MyReviewResponseDto;
 import com.efub.doppelganger.review.dto.ReviewCreateRequestDto;
 import com.efub.doppelganger.review.dto.ReviewResponseDto;
 import com.efub.doppelganger.util.CurrentMemberUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -44,6 +48,19 @@ public class ReviewService {
 
         Review saved = reviewRepository.save(review);
         return ReviewResponseDto.from(saved);
+    }
+
+    // 내가 쓴 리뷰들 조회
+    public List<MyReviewResponseDto> getMyReviews() {
+
+        Long memberId = currentMemberUtil.getCurrentMember().getId();
+
+        List<Review> myReviews =
+                reviewRepository.findByWriterIdOrderByCreatedAtDesc(memberId);
+
+        return myReviews.stream()
+                .map(MyReviewResponseDto::from)
+                .collect(Collectors.toList());
     }
 }
 
