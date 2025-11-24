@@ -2,6 +2,7 @@ package com.efub.doppelganger.reservation;
 
 import com.efub.doppelganger.reservation.dto.request.ReservationCheckRequestDto;
 import com.efub.doppelganger.reservation.dto.request.ReservationRequestDto;
+import com.efub.doppelganger.reservation.dto.response.MyReservationResponseDto;
 import com.efub.doppelganger.reservation.dto.response.ReservationCheckResponseDto;
 import com.efub.doppelganger.reservation.dto.response.ReservationResponseDto;
 import com.efub.doppelganger.reservation.ReservationService;
@@ -11,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 //import org.springframework.web.ErrorResponse;
 import com.efub.doppelganger.global.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -42,5 +45,18 @@ public class ReservationController {
         // R201: 예약 충돌 오류 코드
         ErrorResponse error = new ErrorResponse("R201", e.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    @GetMapping("/reservations/me")
+    public ResponseEntity<List<MyReservationResponseDto>> getMyReservations() {
+        List<MyReservationResponseDto> response = reservationService.getMyReservations();
+        return ResponseEntity.ok(response);
+    }
+
+    // 예약 취소
+    @DeleteMapping("/reservations/{reservationId}")
+    public ResponseEntity<String> cancelReservation(@PathVariable Long reservationId) {
+        reservationService.cancelReservation(reservationId);
+        return ResponseEntity.ok("Reservation cancelled successfully");
     }
 }

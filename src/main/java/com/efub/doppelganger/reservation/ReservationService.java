@@ -8,6 +8,7 @@ import com.efub.doppelganger.reservation.Reservation;
 import com.efub.doppelganger.reservation.ReservationRepository;
 import com.efub.doppelganger.reservation.dto.request.ReservationCheckRequestDto;
 import com.efub.doppelganger.reservation.dto.request.ReservationRequestDto;
+import com.efub.doppelganger.reservation.dto.response.MyReservationResponseDto;
 import com.efub.doppelganger.reservation.dto.response.ReservationCheckResponseDto;
 import com.efub.doppelganger.reservation.dto.response.ReservationResponseDto;
 import com.efub.doppelganger.util.CurrentMemberUtil;
@@ -123,4 +124,42 @@ public class ReservationService {
 
         return ReservationResponseDto.of(savedReservation);
     }
+
+    @Transactional(readOnly = true)
+    public List<MyReservationResponseDto> getMyReservations() {
+
+        Member member = currentMemberUtil.getCurrentMember();
+
+        List<Reservation> reservations = reservationRepository.findByMember(member);
+
+        return reservations.stream()
+                .map(MyReservationResponseDto::of)
+                .toList();
+    }
+
+    @Transactional
+    public void cancelReservation(Long reservationId) {
+        // 현재 로그인한 사용자
+        Member member = currentMemberUtil.getCurrentMember();
+
+        // 예약 조회
+        Reservation reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new IllegalArgumentException("예약을 찾을 수 없습니다."));
+
+        // 본인 예약인지 체크
+        if (!reservation.getMember().getId().equals(member.getId())) {
+            throw new IllegalStateException("본인의 예약만 취소할 수 있습니다.");
+        }
+
+        // 리뷰가 존재하는지 체크
+        int reviewCount = reservationRepository.countReviewsByReservationId(reservationId);
+        if (reviewCount > 0) {
+            throw new IllegalStateException("리뷰가 존재하는 예약은 삭제할 수 없습니다.");
+        }
+
+        // 리뷰가 없다면 정상적으로 삭제
+        reservationRepository.delete(reservation);
+    }
+
+
 }

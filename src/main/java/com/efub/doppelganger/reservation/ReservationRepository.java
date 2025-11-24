@@ -1,5 +1,6 @@
 package com.efub.doppelganger.reservation;
 
+import com.efub.doppelganger.member.domain.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,4 +17,10 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             @Param("checkIn") LocalDate checkIn,
             @Param("checkOut") LocalDate checkOut
     );
+
+    // 내 예약 조회
+    List<Reservation> findByMember(Member member);
+
+    @Query("SELECT COUNT(r) FROM Review r WHERE r.reservation.id = :reservationId")
+    int countReviewsByReservationId(@Param("reservationId") Long reservationId);
 }
