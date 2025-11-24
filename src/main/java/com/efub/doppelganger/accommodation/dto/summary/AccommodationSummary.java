@@ -21,7 +21,14 @@ public class AccommodationSummary {
     private int bathroom;
 
     public static AccommodationSummary from (Accommodation accommodation) {
-        AccommodationImage accommodationImage = accommodation.getAccommodationImageList().get(0); // 대표 이미지 1개만 사용
+        // AccommodationImage accommodationImage = accommodation.getAccommodationImageList().get(0); // 대표 이미지 1개만 사용
+
+        String imageUrl = null;
+        if (accommodation.getAccommodationImageList() != null
+                && !accommodation.getAccommodationImageList().isEmpty()) {
+            imageUrl = accommodation.getAccommodationImageList().get(0).getImgUrl();
+        }
+
 
         int reviewCnt = 0;
         if (accommodation.getReviewList() != null) {
@@ -32,7 +39,8 @@ public class AccommodationSummary {
                 .id(accommodation.getId())
                 .name(accommodation.getName())
                 .rating(accommodation.getRating())
-                .image(accommodationImage.getImgUrl())
+                //.image(accommodationImage.getImgUrl())
+                .image(imageUrl)
                 .location(accommodation.getLocation())
                 .price(accommodation.getPrice())
                 .reviewCnt(reviewCnt)

@@ -5,6 +5,7 @@ import com.efub.doppelganger.accommodation.domain.AccommodationImage;
 import com.efub.doppelganger.accommodation.dto.request.AccommodationRegisterRequestDto;
 import com.efub.doppelganger.accommodation.dto.response.AccommodationDetailResponseDto;
 import com.efub.doppelganger.accommodation.dto.response.AccommodationListResponseDto;
+import com.efub.doppelganger.accommodation.dto.summary.AccommodationSummary;
 import com.efub.doppelganger.accommodation.repository.AccommodationRepository;
 import com.efub.doppelganger.global.s3.S3Service;
 import com.efub.doppelganger.member.domain.Member;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 
@@ -100,5 +102,18 @@ public class AccommodationService {
         }
 
         return AccommodationDetailResponseDto.of(accommodation);
+    }
+
+    // 내가 등록한 숙소 조회
+    public List<AccommodationSummary> getMyAccommodations() {
+
+        Long memberId = currentMemberUtil.getCurrentMember().getId();
+
+        List<Accommodation> accommodationList =
+                accommodationRepository.findByHostId(memberId);
+
+        return accommodationList.stream()
+                .map(AccommodationSummary::from)
+                .toList();
     }
 }

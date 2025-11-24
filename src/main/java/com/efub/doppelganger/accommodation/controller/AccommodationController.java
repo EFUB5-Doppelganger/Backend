@@ -1,8 +1,10 @@
 package com.efub.doppelganger.accommodation.controller;
 
+import com.efub.doppelganger.accommodation.domain.Accommodation;
 import com.efub.doppelganger.accommodation.dto.request.AccommodationRegisterRequestDto;
 import com.efub.doppelganger.accommodation.dto.response.AccommodationDetailResponseDto;
 import com.efub.doppelganger.accommodation.dto.response.AccommodationListResponseDto;
+import com.efub.doppelganger.accommodation.dto.summary.AccommodationSummary;
 import com.efub.doppelganger.accommodation.service.AccommodationService;
 import com.efub.doppelganger.global.ErrorResponse;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -60,5 +64,11 @@ public class AccommodationController {
         ErrorResponse error = new ErrorResponse("A001", "Accommodation not found");
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<List<AccommodationSummary>> getMyAccommodationList() {
+        List<AccommodationSummary> response = accommodationService.getMyAccommodations();
+        return ResponseEntity.ok(response);
     }
 }
