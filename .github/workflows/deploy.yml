@@ -29,16 +29,16 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: make application.yml
+      - name: Create application.yml
         run: |
-          mkdir ./blog/src/main/resources
+          mkdir -p ./src/main/resources
           cd ./blog/src/main/resources
           touch ./application.yml
-          echo "${{ secrets.APPLICATION_YML }}" > ./application.yml
+          echo "${{ secrets.APPLICATION_YML }}" > ./src/main/resources/application.yml
 
       - name: Build with Gradle
         run: |
-          cd blog
+          cd Backend
           chmod +x ./gradlew
           ./gradlew build -x test
 
