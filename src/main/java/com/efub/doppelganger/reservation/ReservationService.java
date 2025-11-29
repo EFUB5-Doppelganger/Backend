@@ -118,6 +118,7 @@ public class ReservationService {
                 .checkOut(requestDto.getCheckOut())
                 .guests(requestDto.getGuests())
                 .totalPayment(requestDto.getTotalPayment())
+                .visited(false)
                 .build();
 
         Reservation savedReservation = reservationRepository.save(reservation);
