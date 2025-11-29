@@ -16,7 +16,7 @@ public class CorsConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         // 허용할 출처 (프론트엔드 주소)
-        configuration.setAllowedOrigins(Arrays.asList(
+        configuration.setAllowedOriginPatterns(Arrays.asList(
                 "http://localhost:3000",    // React 개발 서버
                 "http://localhost:8080"     // 백엔드 서버
         ));
