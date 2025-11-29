@@ -49,10 +49,13 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                     //인증 없이 접근 가능한 경로
                         .requestMatchers(
-                                "/**"
+                                "/users/signup",
+                                "/users/login/general",
+                                "/login/oauth2/**",
+                                "/oauth2/**"
                         ).permitAll()
-                    // 인증없이 허용
-                        .anyRequest().permitAll()
+                    //나머지는 모두 인증 필요
+                        .anyRequest().authenticated()
                 )
 
                 //OAuth2 로그인 설정
