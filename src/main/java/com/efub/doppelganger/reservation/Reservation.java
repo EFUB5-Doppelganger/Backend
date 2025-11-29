@@ -30,8 +30,7 @@ public class Reservation {
 
     private int guests;
     private int totalPayment;
-
-    private boolean visited;
+    private Boolean visited;
 
     // 예약자
     @ManyToOne(fetch = FetchType.LAZY)

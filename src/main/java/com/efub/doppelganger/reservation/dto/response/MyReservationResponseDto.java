@@ -21,7 +21,7 @@ public class MyReservationResponseDto {
 
     private int guests;
     private int totalPayment;
-    private boolean visited;
+    private Boolean visited;
 
     public static MyReservationResponseDto of(Reservation reservation) {
 
@@ -44,7 +44,7 @@ public class MyReservationResponseDto {
                 .checkOut(reservation.getCheckOut().toString())
                 .guests(reservation.getGuests())
                 .totalPayment(reservation.getTotalPayment())
-                .visited(reservation.isVisited())
+                .visited(reservation.getVisited())
                 .build();
     }
 }
