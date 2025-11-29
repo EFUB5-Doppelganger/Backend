@@ -54,8 +54,8 @@ public class SecurityConfig {
                                 "/login/oauth2/**",
                                 "/oauth2/**"
                         ).permitAll()
-                    //나머지는 모두 인증 필요
-                        .anyRequest().authenticated()
+                    // 인증없이 허용
+                        .anyRequest().permitAll()
                 )
 
                 //OAuth2 로그인 설정
