@@ -31,6 +31,8 @@ public class Reservation {
     private int guests;
     private int totalPayment;
 
+    private boolean visited;
+
     // 예약자
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
