@@ -34,7 +34,6 @@ public class AuthService {
         Member member = Member.builder()
                 .email(request.getEmail())
                 .password(encodedPassword)
-                .nickname(request.getNickname())
                 .loginType(LoginType.NORMAL)
                 .build();
 
